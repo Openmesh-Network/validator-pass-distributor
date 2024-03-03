@@ -54,8 +54,8 @@ export async function deploy(
     contract: "OpenmeshGenesis",
     args: [
       tokensPerWeiPerPeriod,
-      token,
-      nft,
+      token.openToken,
+      nft.validatorPass,
       start,
       periodEnds,
       minWeiPerAccount,
