@@ -15,7 +15,6 @@ export interface OpenmeshGenesisDeploymentSettings
   tokensPerWeiPerPeriod: bigint[];
   token: OpenTokenDeployment;
   nft: ValidatorPassDeployment;
-  treasury: Address;
   start: number;
   periodEnds: number[];
   minWeiPerAccount: bigint;
@@ -41,8 +40,6 @@ export async function deploy(
   deployer.startContext("lib/validator-pass");
   const nft = settings?.nft ?? (await validatorPassDeploy(deployer));
   deployer.finishContext();
-  const treasury =
-    settings?.treasury ?? "0x519ce4C129a981B2CBB4C3990B1391dA24E8EbF3";
   const start = settings?.start ?? UTCBlockchainDate(2024, 3, 2); // 2 March 2024
   const periodEnds = settings?.periodEnds ?? [
     UTCBlockchainDate(2024, 3, 10), // 10 March 2024
@@ -59,7 +56,6 @@ export async function deploy(
       tokensPerWeiPerPeriod,
       token,
       nft,
-      treasury,
       start,
       periodEnds,
       minWeiPerAccount,

@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 import {IOpenmeshGenesis} from "./IOpenmeshGenesis.sol";
 import {IERC20MintBurnable} from "../lib/open-token/src/IERC20MintBurnable.sol";
-import {IERC721Mintable} from "./IERC721Mintable.sol";
+import {IERC721Mintable} from "../lib/validator-pass/src/IERC721Mintable.sol";
 
 import {OpenmeshENSReverseClaimable} from "../lib/openmesh-admin/src/OpenmeshENSReverseClaimable.sol";
 
@@ -12,7 +12,6 @@ contract OpenmeshGenesis is OpenmeshENSReverseClaimable, IOpenmeshGenesis {
     uint256[] public tokensPerWeiPerPeriod;
     IERC20MintBurnable public immutable token;
     IERC721Mintable public immutable nft;
-    address payable public immutable treasury;
     uint32 public immutable start;
     uint32[] public periodEnds;
     uint256 public immutable minWeiPerAccount;
@@ -22,7 +21,6 @@ contract OpenmeshGenesis is OpenmeshENSReverseClaimable, IOpenmeshGenesis {
         uint256[] memory _tokensPerWeiPerPeriod,
         IERC20MintBurnable _token,
         IERC721Mintable _nft,
-        address payable _treasury,
         uint32 _start,
         uint32[] memory _periodEnds,
         uint256 _minWeiPerAccount,
@@ -31,7 +29,6 @@ contract OpenmeshGenesis is OpenmeshENSReverseClaimable, IOpenmeshGenesis {
         tokensPerWeiPerPeriod = _tokensPerWeiPerPeriod;
         token = _token;
         nft = _nft;
-        treasury = _treasury;
         start = _start;
         periodEnds = _periodEnds;
         minWeiPerAccount = _minWeiPerAccount;
@@ -98,7 +95,7 @@ contract OpenmeshGenesis is OpenmeshENSReverseClaimable, IOpenmeshGenesis {
         }
 
         // Send all native currency of this contract to treasury
-        (bool succes,) = treasury.call{value: address(this).balance}("");
+        (bool succes,) = OPENMESH_ADMIN.call{value: address(this).balance}("");
         if (!succes) {
             revert TreasuryReverted();
         }
