@@ -17,10 +17,7 @@ import {
 export interface OpenmeshGenesisDeploymentSettings {
   openTokenDeployment: OpenTokenDeployment;
   validatorPassDeployment: ValidatorPassDeployment;
-  openmeshGenesisDeploymentSettings: Omit<
-    DeployOpenmeshGenesisSettings,
-    "token" | "nft"
-  >;
+  openmeshGenesisSettings: Omit<DeployOpenmeshGenesisSettings, "token" | "nft">;
   forceRedeploy?: boolean;
 }
 
@@ -48,7 +45,7 @@ export async function deploy(
   const openmeshGenesis = await deployOpenmeshGenesis(deployer, {
     token: openTokenDeployment.openToken,
     nft: validatorPassDeployment.validatorPass,
-    ...(settings?.openmeshGenesisDeploymentSettings ?? {
+    ...(settings?.openmeshGenesisSettings ?? {
       tokensPerWeiPerPeriod: [BigInt(30_000), BigInt(27_500), BigInt(25_000)],
       start: UTCBlockchainDate(2024, 3, 2), // 2 March 2024
       periodEnds: [
