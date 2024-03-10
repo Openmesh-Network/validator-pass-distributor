@@ -64,7 +64,12 @@ export async function deploy(
     ...settings,
   });
 
-  return {
+  const deployment = {
     openmeshGenesis: openmeshGenesis,
   };
+  await deployer.saveDeployment({
+    deploymentName: "latest.json",
+    deployment: deployment,
+  });
+  return deployment;
 }
