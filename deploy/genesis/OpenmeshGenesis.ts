@@ -1,6 +1,6 @@
 import { Address, DeployInfo, Deployer } from "../../web3webdeploy/types";
 
-export interface DeployOpenmeshGenesisSettingsInternal
+export interface DeployOpenmeshGenesisSettings
   extends Omit<DeployInfo, "contract" | "args"> {
   tokensPerWeiPerPeriod: bigint[];
   token: Address;
@@ -13,7 +13,7 @@ export interface DeployOpenmeshGenesisSettingsInternal
 
 export async function deployOpenmeshGenesis(
   deployer: Deployer,
-  settings: DeployOpenmeshGenesisSettingsInternal
+  settings: DeployOpenmeshGenesisSettings
 ): Promise<Address> {
   return await deployer
     .deploy({

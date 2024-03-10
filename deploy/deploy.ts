@@ -10,7 +10,7 @@ import {
   ValidatorPassDeployment,
 } from "../lib/validator-pass/deploy/deploy";
 import {
-  DeployOpenmeshGenesisSettingsInternal,
+  DeployOpenmeshGenesisSettings,
   deployOpenmeshGenesis,
 } from "./genesis/OpenmeshGenesis";
 
@@ -18,7 +18,7 @@ export interface OpenmeshGenesisDeploymentSettings {
   openTokenDeployment: OpenTokenDeployment;
   validatorPassDeployment: ValidatorPassDeployment;
   openmeshGenesisDeploymentSettings: Omit<
-    DeployOpenmeshGenesisSettingsInternal,
+    DeployOpenmeshGenesisSettings,
     "token" | "nft"
   >;
   forceRedeploy?: boolean;
