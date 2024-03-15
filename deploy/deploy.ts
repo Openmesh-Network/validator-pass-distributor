@@ -12,7 +12,7 @@ import {
 import {
   DeployOpenmeshGenesisSettings,
   deployOpenmeshGenesis,
-} from "./genesis/OpenmeshGenesis";
+} from "./internal/OpenmeshGenesis";
 
 export interface OpenmeshGenesisDeploymentSettings {
   openTokenDeployment: OpenTokenDeployment;
