@@ -30,7 +30,12 @@ export async function deploy(
   settings?: OpenmeshGenesisDeploymentSettings
 ): Promise<OpenmeshGenesisDeployment> {
   if (settings?.forceRedeploy !== undefined && !settings.forceRedeploy) {
-    return await deployer.loadDeployment({ deploymentName: "latest.json" });
+    const existingDeployment = await deployer.loadDeployment({
+      deploymentName: "latest.json",
+    });
+    if (existingDeployment !== undefined) {
+      return existingDeployment;
+    }
   }
 
   deployer.startContext("lib/open-token");
