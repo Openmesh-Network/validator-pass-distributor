@@ -95,8 +95,8 @@ contract OpenmeshGenesis is OpenmeshENSReverseClaimable, IOpenmeshGenesis {
         }
 
         // Send all native currency of this contract to treasury
-        (bool succes,) = OPENMESH_ADMIN.call{value: address(this).balance}("");
-        if (!succes) {
+        (bool success,) = OPENMESH_ADMIN.call{value: address(this).balance}("");
+        if (!success) {
             revert TreasuryReverted();
         }
 
