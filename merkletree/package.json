@@ -1,0 +1,14 @@
+{
+  "main": "generate-tree.ts",
+  "type": "module",
+  "scripts": {
+    "generate": "rm -rf build && npx tsc && node build/generate-tree.js"
+  },
+  "dependencies": {
+    "@openzeppelin/merkle-tree": "^1.0.6",
+    "typescript": "^5.4.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.8"
+  }
+}

@@ -1,10 +1,5 @@
-import { Ether, ether } from "../utils/ethersUnits";
 import { UTCBlockchainDate } from "../utils/timeUnits";
-import { Address, Deployer } from "../web3webdeploy/types";
-import {
-  deploy as openTokenDeploy,
-  OpenTokenDeployment,
-} from "../lib/open-token/deploy/deploy";
+import { Address, Bytes, Deployer } from "../web3webdeploy/types";
 import {
   deploy as validatorPassDeploy,
   ValidatorPassDeployment,
@@ -13,11 +8,16 @@ import {
   DeployOpenmeshGenesisSettings,
   deployOpenmeshGenesis,
 } from "./internal/OpenmeshGenesis";
+import { ether, gwei } from "../utils/ethersUnits";
+
+export interface MerkleTreeItem {
+  account: Address;
+  mintTime: number;
+}
 
 export interface OpenmeshGenesisDeploymentSettings {
-  openTokenDeployment: OpenTokenDeployment;
   validatorPassDeployment: ValidatorPassDeployment;
-  openmeshGenesisSettings: Omit<DeployOpenmeshGenesisSettings, "token" | "nft">;
+  openmeshGenesisSettings: Omit<DeployOpenmeshGenesisSettings, "validatorPass">;
   forceRedeploy?: boolean;
 }
 
@@ -38,32 +38,42 @@ export async function deploy(
     }
   }
 
-  deployer.startContext("lib/open-token");
-  const openTokenDeployment =
-    settings?.openTokenDeployment ?? (await openTokenDeploy(deployer));
-  deployer.finishContext();
   deployer.startContext("lib/validator-pass");
   const validatorPassDeployment =
-    settings?.validatorPassDeployment ?? (await validatorPassDeploy(deployer));
+    settings?.validatorPassDeployment ??
+    (await validatorPassDeploy(deployer, {
+      validatorPassSettings: { salt: "Genesis" + deployer.settings.batchId },
+    }));
   deployer.finishContext();
 
   const openmeshGenesis = await deployOpenmeshGenesis(deployer, {
-    token: openTokenDeployment.openToken,
-    nft: validatorPassDeployment.validatorPass,
+    validatorPass: validatorPassDeployment.validatorPass,
     ...(settings?.openmeshGenesisSettings ?? {
-      tokensPerWeiPerPeriod: [BigInt(30_000), BigInt(27_500), BigInt(25_000)],
-      start: UTCBlockchainDate(2024, 3, 2), // 2 March 2024
-      periodEnds: [
-        UTCBlockchainDate(2024, 3, 10), // 10 March 2024
-        UTCBlockchainDate(2024, 3, 20), // 20 March 2024
-        UTCBlockchainDate(2024, 3, 30), // 30 March 2024
+      mintThresholds: [
+        {
+          mintCount: BigInt(1),
+          price: gwei / BigInt(2),
+        },
+        {
+          mintCount: BigInt(2),
+          price: gwei,
+        },
+        {
+          mintCount: BigInt(3),
+          price: gwei + gwei / BigInt(2),
+        },
+        {
+          mintCount: BigInt(4),
+          price: BigInt(2) * gwei,
+        },
       ],
-      minWeiPerAccount: ether / BigInt(2), // 0.5 ETH
-      maxWeiPerAccount: Ether(2), // 2 ETH
+      publicMintTime: UTCBlockchainDate(2024, 5, 8),
+      whitelistRoot:
+        "0xba1872253c7519232843b5a162f2892aa0117d55f10376955554838e892214a4",
     }),
   });
 
-  const deployment = {
+  const deployment: OpenmeshGenesisDeployment = {
     openmeshGenesis: openmeshGenesis,
   };
   await deployer.saveDeployment({

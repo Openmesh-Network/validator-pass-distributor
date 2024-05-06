@@ -1,32 +1,37 @@
-import { Address, DeployInfo, Deployer } from "../../web3webdeploy/types";
+import {
+  Address,
+  Bytes,
+  DeployInfo,
+  Deployer,
+} from "../../web3webdeploy/types";
+
+export interface PriceThreshold {
+  mintCount: bigint;
+  price: bigint;
+}
 
 export interface DeployOpenmeshGenesisSettings
   extends Omit<DeployInfo, "contract" | "args"> {
-  tokensPerWeiPerPeriod: bigint[];
-  token: Address;
-  nft: Address;
-  start: number;
-  periodEnds: number[];
-  minWeiPerAccount: bigint;
-  maxWeiPerAccount: bigint;
+  validatorPass: Address;
+  mintThresholds: PriceThreshold[];
+  publicMintTime: number;
+  whitelistRoot: Bytes;
 }
 
 export async function deployOpenmeshGenesis(
   deployer: Deployer,
   settings: DeployOpenmeshGenesisSettings
 ): Promise<Address> {
+  console.log(settings);
   return await deployer
     .deploy({
       id: "OpenmeshGenesis",
       contract: "OpenmeshGenesis",
       args: [
-        settings.tokensPerWeiPerPeriod,
-        settings.token,
-        settings.nft,
-        settings.start,
-        settings.periodEnds,
-        settings.minWeiPerAccount,
-        settings.maxWeiPerAccount,
+        settings.validatorPass,
+        settings.mintThresholds,
+        settings.publicMintTime,
+        settings.whitelistRoot,
       ],
       ...settings,
     })
