@@ -5,10 +5,13 @@ import {IOpenmeshGenesis} from "./IOpenmeshGenesis.sol";
 import {IERC721Mintable} from "../lib/validator-pass/src/IERC721Mintable.sol";
 
 import {MerkleProof} from "../lib/openzeppelin-contracts/contracts/utils/cryptography/MerkleProof.sol";
+import {IERC20, SafeERC20} from "../lib/openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol";
 
 import {OpenmeshENSReverseClaimable} from "../lib/openmesh-admin/src/OpenmeshENSReverseClaimable.sol";
 
 contract OpenmeshGenesis is OpenmeshENSReverseClaimable, IOpenmeshGenesis {
+    using SafeERC20 for IERC20;
+
     mapping(address account => bool contributed) public hasContributed;
     uint256 public mintCount;
 
@@ -95,7 +98,7 @@ contract OpenmeshGenesis is OpenmeshENSReverseClaimable, IOpenmeshGenesis {
         // Return any overpayment
         uint256 refund;
         unchecked {
-            refund = price - msg.value;
+            refund = msg.value - price;
         }
         if (refund != 0) {
             (bool success,) = msg.sender.call{value: refund}("");
@@ -117,5 +120,14 @@ contract OpenmeshGenesis is OpenmeshENSReverseClaimable, IOpenmeshGenesis {
     {
         bytes32 leaf = keccak256(bytes.concat(keccak256(abi.encode(_account, _mintTime))));
         return MerkleProof.verify(_proof, whitelistRoot, leaf);
+    }
+
+    /// @notice To save any erc20 funds stuck in this contract
+    function rescue(IERC20 _token, address _to, uint256 _amount) external {
+        if (msg.sender != OPENMESH_ADMIN) {
+            revert NotAllowed();
+        }
+
+        _token.safeTransfer(_to, _amount);
     }
 }

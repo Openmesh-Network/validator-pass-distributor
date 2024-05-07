@@ -1,5 +1,5 @@
 import { UTCBlockchainDate } from "../utils/timeUnits";
-import { Address, Bytes, Deployer } from "../web3webdeploy/types";
+import { Address, Deployer } from "../web3webdeploy/types";
 import {
   deploy as validatorPassDeploy,
   ValidatorPassDeployment,
@@ -67,9 +67,9 @@ export async function deploy(
           price: BigInt(2) * gwei,
         },
       ],
-      publicMintTime: UTCBlockchainDate(2024, 5, 8),
+      publicMintTime: UTCBlockchainDate(2024, 5, 9),
       whitelistRoot:
-        "0xba1872253c7519232843b5a162f2892aa0117d55f10376955554838e892214a4",
+        "0x18936852e39edc09b19c2e281ba3887e91259de233b7a47ca122d185000e6124",
     }),
   });
 

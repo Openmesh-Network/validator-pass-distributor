@@ -1,5 +1,5 @@
 export const ValidatorPassContract = {
-  address: "0x0617ca3B9b621ba854439ec5F4329EB0e9Df6c38",
+  address: "0x9f61Edd5Cad3d5A9519A7Faf893aF297ee5FBF19",
   abi: [
     { type: "constructor", inputs: [], stateMutability: "nonpayable" },
     {

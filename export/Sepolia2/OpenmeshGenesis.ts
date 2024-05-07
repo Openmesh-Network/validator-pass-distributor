@@ -1,5 +1,5 @@
 export const OpenmeshGenesisContract = {
-  address: "0x514F36116D7b556D7B36A45Eef05FACE39994c8C",
+  address: "0x029241a9511412CA2Db829AEB5A718Ef1DC9E80D",
   abi: [
     {
       type: "constructor",
@@ -104,6 +104,17 @@ export const OpenmeshGenesisContract = {
     },
     {
       type: "function",
+      name: "rescue",
+      inputs: [
+        { name: "_token", type: "address", internalType: "contract IERC20" },
+        { name: "_to", type: "address", internalType: "address" },
+        { name: "_amount", type: "uint256", internalType: "uint256" },
+      ],
+      outputs: [],
+      stateMutability: "nonpayable",
+    },
+    {
+      type: "function",
       name: "validatorPass",
       inputs: [],
       outputs: [
@@ -147,8 +158,24 @@ export const OpenmeshGenesisContract = {
       ],
       anonymous: false,
     },
+    {
+      type: "error",
+      name: "AddressEmptyCode",
+      inputs: [{ name: "target", type: "address", internalType: "address" }],
+    },
+    {
+      type: "error",
+      name: "AddressInsufficientBalance",
+      inputs: [{ name: "account", type: "address", internalType: "address" }],
+    },
+    { type: "error", name: "FailedInnerCall", inputs: [] },
     { type: "error", name: "MintOver", inputs: [] },
     { type: "error", name: "NotAllowed", inputs: [] },
+    {
+      type: "error",
+      name: "SafeERC20FailedOperation",
+      inputs: [{ name: "token", type: "address", internalType: "address" }],
+    },
     { type: "error", name: "TransferReverted", inputs: [] },
     {
       type: "error",
