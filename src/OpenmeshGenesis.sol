@@ -60,7 +60,7 @@ contract OpenmeshGenesis is OpenmeshENSReverseClaimable, IOpenmeshGenesis {
     }
 
     /// @inheritdoc IOpenmeshGenesis
-    function publicMint() external {
+    function publicMint() external payable {
         if (!canPublicMint(msg.sender)) {
             revert NotAllowed();
         }
@@ -69,7 +69,7 @@ contract OpenmeshGenesis is OpenmeshENSReverseClaimable, IOpenmeshGenesis {
     }
 
     /// @inheritdoc IOpenmeshGenesis
-    function whitelistMint(bytes32[] memory _proof, uint32 _mintTime) external {
+    function whitelistMint(bytes32[] memory _proof, uint32 _mintTime) external payable {
         if (!canWhitelistMint(msg.sender, _proof, _mintTime)) {
             revert NotAllowed();
         }
@@ -90,6 +90,18 @@ contract OpenmeshGenesis is OpenmeshENSReverseClaimable, IOpenmeshGenesis {
         uint256 price = getCurrentPrice();
         if (msg.value < price) {
             revert Underpaying(msg.value, price);
+        }
+
+        // Return any overpayment
+        uint256 refund;
+        unchecked {
+            refund = price - msg.value;
+        }
+        if (refund != 0) {
+            (bool success,) = msg.sender.call{value: refund}("");
+            if (!success) {
+                revert TransferReverted();
+            }
         }
 
         validatorPass.mint(msg.sender);

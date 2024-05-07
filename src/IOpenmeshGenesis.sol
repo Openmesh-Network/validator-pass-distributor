@@ -33,14 +33,14 @@ interface IOpenmeshGenesis {
         returns (bool allowed);
 
     /// @notice Perform a public mint.
-    /// @dev Every account can only mint once.
-    function publicMint() external;
+    /// @dev Every address can only mint once.
+    function publicMint() external payable;
 
     /// @notice Perform a whitelist mint.
     /// @param _proof Merkle tree whitelist proof.
     /// @param _mintTime Mint time of the sender in the merkle tree.
-    /// @dev Every account can only mint once.
-    function whitelistMint(bytes32[] memory _proof, uint32 _mintTime) external;
+    /// @dev Every address can only mint once.
+    function whitelistMint(bytes32[] memory _proof, uint32 _mintTime) external payable;
 
     /// @notice Sends all native currency stored in this contract to the Openmesh treasury.
     /// @dev Can be called by anyone at any time. More gas efficient that sending the funds every mint.

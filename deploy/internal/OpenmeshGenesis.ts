@@ -22,7 +22,6 @@ export async function deployOpenmeshGenesis(
   deployer: Deployer,
   settings: DeployOpenmeshGenesisSettings
 ): Promise<Address> {
-  console.log(settings);
   return await deployer
     .deploy({
       id: "OpenmeshGenesis",
