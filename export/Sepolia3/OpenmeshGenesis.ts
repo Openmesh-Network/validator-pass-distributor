@@ -1,5 +1,5 @@
 export const OpenmeshGenesisContract = {
-  address: "0x029241a9511412CA2Db829AEB5A718Ef1DC9E80D",
+  address: "0x0810B44e9454C82C2f4d2e482DB2291e49812C5E",
   abi: [
     {
       type: "constructor",

@@ -108,6 +108,10 @@ contract OpenmeshGenesis is OpenmeshENSReverseClaimable, IOpenmeshGenesis {
         }
 
         validatorPass.mint(msg.sender);
+        unchecked {
+            // Mint count is capped by price period
+            ++mintCount;
+        }
 
         hasContributed[msg.sender] = true;
         emit Mint(msg.sender, msg.value);
