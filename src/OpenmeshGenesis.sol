@@ -114,7 +114,7 @@ contract OpenmeshGenesis is OpenmeshENSReverseClaimable, IOpenmeshGenesis {
         }
 
         hasContributed[msg.sender] = true;
-        emit Mint(msg.sender, msg.value);
+        emit Mint(msg.sender, price);
     }
 
     function _verifyWhitelist(bytes32[] memory _proof, address _account, uint32 _mintTime)
