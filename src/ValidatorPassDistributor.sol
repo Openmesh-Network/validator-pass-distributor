@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import {IOpenmeshGenesis} from "./IOpenmeshGenesis.sol";
+import {IValidatorPassDistributor} from "./IValidatorPassDistributor.sol";
 import {IERC721Mintable} from "../lib/validator-pass/src/IERC721Mintable.sol";
 
 import {MerkleProof} from "../lib/openzeppelin-contracts/contracts/utils/cryptography/MerkleProof.sol";
@@ -9,7 +9,7 @@ import {IERC20, SafeERC20} from "../lib/openzeppelin-contracts/contracts/token/E
 
 import {OpenmeshENSReverseClaimable} from "../lib/openmesh-admin/src/OpenmeshENSReverseClaimable.sol";
 
-contract OpenmeshGenesis is OpenmeshENSReverseClaimable, IOpenmeshGenesis {
+contract ValidatorPassDistributor is OpenmeshENSReverseClaimable, IValidatorPassDistributor {
     using SafeERC20 for IERC20;
 
     mapping(address account => bool contributed) public hasContributed;
@@ -32,7 +32,7 @@ contract OpenmeshGenesis is OpenmeshENSReverseClaimable, IOpenmeshGenesis {
         whitelistRoot = _whitelistRoot;
     }
 
-    /// @inheritdoc IOpenmeshGenesis
+    /// @inheritdoc IValidatorPassDistributor
     function getCurrentPrice() public view returns (uint256 currentPrice) {
         for (uint256 i; i < pricePeriods.length;) {
             // Find first period with current mintCount under the period mintCount
@@ -48,12 +48,12 @@ contract OpenmeshGenesis is OpenmeshENSReverseClaimable, IOpenmeshGenesis {
         revert MintOver();
     }
 
-    /// @inheritdoc IOpenmeshGenesis
+    /// @inheritdoc IValidatorPassDistributor
     function canPublicMint(address _account) public view returns (bool allowed) {
         return !hasContributed[_account] && block.timestamp > publicMintTime;
     }
 
-    /// @inheritdoc IOpenmeshGenesis
+    /// @inheritdoc IValidatorPassDistributor
     function canWhitelistMint(address _account, bytes32[] memory _proof, uint32 _mintTime)
         public
         view
@@ -62,7 +62,7 @@ contract OpenmeshGenesis is OpenmeshENSReverseClaimable, IOpenmeshGenesis {
         return !hasContributed[_account] && block.timestamp > _mintTime && _verifyWhitelist(_proof, _account, _mintTime);
     }
 
-    /// @inheritdoc IOpenmeshGenesis
+    /// @inheritdoc IValidatorPassDistributor
     function publicMint() external payable {
         if (!canPublicMint(msg.sender)) {
             revert NotAllowed();
@@ -71,7 +71,7 @@ contract OpenmeshGenesis is OpenmeshENSReverseClaimable, IOpenmeshGenesis {
         _mint();
     }
 
-    /// @inheritdoc IOpenmeshGenesis
+    /// @inheritdoc IValidatorPassDistributor
     function whitelistMint(bytes32[] memory _proof, uint32 _mintTime) external payable {
         if (!canWhitelistMint(msg.sender, _proof, _mintTime)) {
             revert NotAllowed();
@@ -80,7 +80,7 @@ contract OpenmeshGenesis is OpenmeshENSReverseClaimable, IOpenmeshGenesis {
         _mint();
     }
 
-    /// @inheritdoc IOpenmeshGenesis
+    /// @inheritdoc IValidatorPassDistributor
     function collectFunds() external {
         // Send all native currency of this contract to treasury
         (bool success,) = OPENMESH_ADMIN.call{value: address(this).balance}("");

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-interface IOpenmeshGenesis {
+interface IValidatorPassDistributor {
     error Underpaying(uint256 attached, uint256 minRequired);
     error MintOver();
     error NotAllowed();
